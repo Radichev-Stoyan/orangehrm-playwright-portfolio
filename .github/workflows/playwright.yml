@@ -9,8 +9,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      USER_EMAIL: ${{ secrets.ORANGE_USERNAME }}
-      USER_PASSWORD: ${{ secrets.ORANGE_PASSWORD }}
+      ORANGE_USERNAME: ${{ secrets.ORANGE_USERNAME }}
+      ORANGE_PASSWORD: ${{ secrets.ORANGE_PASSWORD }}
       BASE_URL: ${{ secrets.BASE_URL }}
     steps:
     - uses: actions/checkout@v4
