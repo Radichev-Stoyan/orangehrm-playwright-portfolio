@@ -53,7 +53,7 @@ test.describe('PIM - Employee management', () => {
         await expect(page.getByText('Required')).toBeVisible();
     });
 
-    test.only('Adding an employee without a last name', async ({ page }, testInfo) => {
+    test('Adding an employee without a last name', async ({ page }, testInfo) => {
         const menu = new SideMenu(page, testInfo.project.name);
         const employee = randomEmployee();
 
