@@ -80,6 +80,6 @@ test.describe('OrangeHRM Login', () => {
 
         await page.getByText('Forgot your password? ').click();
 
-        await expect(page.getByPlaceholder('Username')).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Reset Password' })).toBeVisible();
     });
 });
