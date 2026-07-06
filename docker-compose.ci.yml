@@ -4,6 +4,9 @@ services:
     container_name: orangehrm-db-ci
     environment:
       MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: orangehrm
+      MARIADB_USER: orangehrm
+      MARIADB_PASSWORD: orangehrm
     volumes:
       - ./docker/orangehrm-seed.sql:/docker-entrypoint-initdb.d/01-orangehrm-seed.sql:ro
     healthcheck:
