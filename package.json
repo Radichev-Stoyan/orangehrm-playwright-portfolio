@@ -4,7 +4,9 @@
   "description": "End-to-end QA automation portfolio project for OrangeHRM using Playwright and TypeScript.",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test tests/pim/employee.spec.ts"
+    "test": "npx playwright test tests/pim/employee.spec.ts",
+    "test:chromium": "playwright test --project=chromium",
+    "wait:orangehrm": "tsx scripts/wait-for-orangehrm.ts"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,8 @@
   "homepage": "https://github.com/Radichev-Stoyan/orangehrm-playwright-portfolio#readme",
   "devDependencies": {
     "@playwright/test": "^1.61.1",
-    "@types/node": "^26.1.0"
+    "@types/node": "^26.1.0",
+    "tsx": "^4.23.0"
   },
   "dependencies": {
     "dotenv": "^17.4.2"

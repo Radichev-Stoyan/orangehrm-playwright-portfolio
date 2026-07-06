@@ -82,4 +82,14 @@ test.describe('PIM - Employee management', () => {
 
         await pimPage.searchEmployee(employee);
     });
+
+    test.only('Edit employee information', async ({ page }, testInfo) => {
+        const pimPage = new PimPage(page, testInfo.project.name);
+
+        const employee = await pimPage.createEmployee();
+
+        await pimPage.editEmployee(employee);
+
+        await expect(page.getByPlaceholder('yyyy-mm-dd').nth(1)).toHaveValue('1992-06-15');
+    });
 })

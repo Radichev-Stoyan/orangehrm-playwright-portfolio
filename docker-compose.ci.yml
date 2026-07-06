@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: orangehrm-db-ci
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - ./docker/orangehrm-seed.sql:/docker-entrypoint-initdb.d/01-orangehrm-seed.sql:ro
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  orangehrm:
+    image: orangehrm/orangehrm:latest
+    container_name: orangehrm-app-ci
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      ORANGEHRM_DATABASE_HOST: db
+      ORANGEHRM_DATABASE_PORT: 3306
+      ORANGEHRM_DATABASE_NAME: orangehrm
+      ORANGEHRM_DATABASE_USER: orangehrm
+      ORANGEHRM_DATABASE_PASSWORD: orangehrm
+    volumes:
+      - orangehrm_app_data_ci:/var/www/html
+
+volumes:
+  orangehrm_app_data_ci:
+    name: orangehrm_app_data_ci

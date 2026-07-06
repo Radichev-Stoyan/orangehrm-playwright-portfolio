@@ -1,31 +1,69 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     env:
+      BASE_URL: http://localhost:8080
       ORANGE_USERNAME: ${{ secrets.ORANGE_USERNAME }}
       ORANGE_PASSWORD: ${{ secrets.ORANGE_PASSWORD }}
-      BASE_URL: ${{ secrets.BASE_URL }}
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create OrangeHRM app volume
+        run: docker volume create orangehrm_app_data_ci
+
+      - name: Restore OrangeHRM app data
+        run: |
+          docker run --rm \
+            -v orangehrm_app_data_ci:/volume \
+            -v ${{ github.workspace }}/docker:/backup \
+            alpine \
+            sh -c "tar xzf /backup/orangehrm-app-data.tar.gz -C /volume"
+
+      - name: Start OrangeHRM
+        run: docker compose -f docker-compose.ci.yml up -d
+
+      - name: Show Docker containers
+        run: docker ps
+
+      - name: Wait for OrangeHRM login page
+        run: npm run wait:orangehrm
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Dump Docker logs
+        if: failure()
+        run: docker compose -f docker-compose.ci.yml logs
+
+      - name: Stop OrangeHRM
+        if: always()
+        run: docker compose -f docker-compose.ci.yml down -v
