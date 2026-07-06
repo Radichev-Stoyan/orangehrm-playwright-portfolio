@@ -83,7 +83,7 @@ test.describe('PIM - Employee management', () => {
         await pimPage.searchEmployee(employee);
     });
 
-    test.only('Edit employee information', async ({ page }, testInfo) => {
+    test('Edit employee information', async ({ page }, testInfo) => {
         const pimPage = new PimPage(page, testInfo.project.name);
 
         const employee = await pimPage.createEmployee();
