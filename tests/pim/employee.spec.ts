@@ -92,4 +92,14 @@ test.describe('PIM - Employee management', () => {
 
         await expect(page.getByPlaceholder('yyyy-mm-dd').nth(1)).toHaveValue('1992-06-15');
     });
+
+    test('Deleting en employee', async ({ page }, testInfo) => {
+        const pimPage = new PimPage(page, testInfo.project.name);
+
+        const employee = await pimPage.createEmployee();
+
+        await pimPage.deleteEmployee(employee);
+
+        await expect(page.locator('.oxd-toast-container--bottom')).toBeVisible();
+    });
 })

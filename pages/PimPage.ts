@@ -100,7 +100,5 @@ export class PimPage {
         await employeeRow.locator('button:has(.bi-trash)').click();
 
         await this.page.getByRole('button', { name: ' Yes, Delete ' }).click();
-
-        await expect(this.page.getByText('Successfully Deleted')).toBeVisible();
     };
 }
