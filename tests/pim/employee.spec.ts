@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test"
 import { loginAsAdmin } from "../../utils/auth"
 import { SideMenu } from "../../pages/SideMenu"
 import { randomEmployee } from "../../utils/randomData"
+import { PimPage } from "../../pages/PimPage"
 
 test.describe('PIM - Employee management', () => {
     test.beforeEach(async ({ page }) => {
@@ -72,5 +73,13 @@ test.describe('PIM - Employee management', () => {
         await page.getByRole('button', { name: ' Save ' }).click();
 
         await expect(page.getByText('Required')).toBeVisible();
+    });
+
+    test('Search for an employee by ID', async ({ page }, testInfo) => {
+        const pimPage = new PimPage(page, testInfo.project.name);
+
+        const employee = await pimPage.createEmployee();
+
+        await pimPage.searchEmployee(employee);
     });
 })
