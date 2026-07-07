@@ -78,14 +78,11 @@ export class AdminPage {
         await confirmPasswordInput.fill(password);
 
         await saveButton.click();
+
+        return username;
     }
 
-    async searchUserByUsername(username: string, isMobile: boolean) {
-        if (isMobile) {
-            const toggleButton = this.page.locator('.oxd-table-filter-header .oxd-icon-button');
-            await toggleButton.click();
-        }
-
+    async searchUserByUsername(username: string) {
         const usernameInput = this.page
             .locator('.oxd-input-group')
             .filter({ hasText: 'Username' })

@@ -19,7 +19,7 @@ test.describe('Admin - User management', () => {
         await expect(page.getByRole('heading', { name: 'System Users' })).toBeVisible();
     });
 
-    test.only('Create user', async ({ page }, testInfo) => {
+    test('Create user', async ({ page }, testInfo) => {
         const sideMenu = new SideMenu(page, testInfo.project.name);
 
         await sideMenu.openPim();
@@ -37,5 +37,50 @@ test.describe('Admin - User management', () => {
         await expect(page.locator('.oxd-toast--success')).toContainText('Successfully Saved');
 
         await expect(page.getByRole('heading', { name: 'System Users' })).toBeVisible();
+    });
+
+    test.only('Search user by username', async ({ page }, testInfo) => {
+        const sideMenu = new SideMenu(page, testInfo.project.name);
+
+        await sideMenu.openPim();
+
+        const pimPage = new PimPage(page, testInfo.project.name);
+
+        const employee = await pimPage.createEmployee();
+
+        await sideMenu.openAdmin();
+
+        const adminPage = new AdminPage(page);
+
+        const username = await adminPage.createUserAdminPage(employee.firstName);
+
+        employee.username = username;
+
+        await expect(page.locator('.oxd-toast--success')).toContainText('Successfully Saved');
+
+        await expect(page.getByRole('heading', { name: 'System Users' })).toBeVisible();
+
+        if (testInfo.project.use.isMobile) {
+            await page.locator('.oxd-table-filter .oxd-icon-button').click();
+            await expect(page
+                .locator('.oxd-label')
+                .filter({ hasText: 'Username' })
+            ).toBeVisible();
+        }
+
+        const usernameInput = page
+            .locator('.oxd-input-group')
+            .filter({ hasText: 'Username' })
+            .getByRole('textbox');
+
+        await usernameInput.fill(username);
+
+        await page.getByRole('button', { name: ' Search ' }).click();
+
+        const usernameTableCell = page
+            .locator('.oxd-table-row .oxd-table-cell')
+            .filter({ hasText: `${employee.username}` });
+
+        await expect(usernameTableCell).toBeVisible();
     });
 })
