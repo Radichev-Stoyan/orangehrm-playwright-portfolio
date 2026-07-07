@@ -1,10 +1,13 @@
 import { expect, type Page } from "@playwright/test";
-import { generateRandomPassword, generateRandomUsername } from "../utils/adminRandomData";
+import { generateRandomPassword, generateRandomUsername, getRandomItem } from "../utils/adminRandomData";
 
 export class AdminPage {
     constructor(private page: Page) { }
 
-    private async selectUserRole(role: 'Admin' | 'ESS') {
+    private async selectUserRole(): Promise<'Admin' | 'ESS'> {
+        const roles: Array<'Admin' | 'ESS'> = ['Admin', 'ESS'];
+        const role = getRandomItem(roles);
+
         const userRoleDropdown = this.page
             .locator('.oxd-input-group')
             .filter({ hasText: 'User Role' })
@@ -15,9 +18,16 @@ export class AdminPage {
         await this.page
             .getByRole('option', { name: role })
             .click();
+
+        await expect(userRoleDropdown).toContainText(role);
+
+        return role;
     }
 
-    async selectStatus(status: 'Enabled' | 'Disabled') {
+    async selectStatus(): Promise<'Enabled' | 'Disabled'> {
+        const statuses: Array<'Enabled' | 'Disabled'> = ['Enabled', 'Disabled'];
+        const status = getRandomItem(statuses);
+
         const statusDropdown = this.page
             .locator('.oxd-input-group')
             .filter({ hasText: 'Status' })
@@ -31,6 +41,8 @@ export class AdminPage {
             .click();
 
         await expect(statusDropdown).toContainText(status);
+
+        return status;
     }
 
     async createUserAdminPage(employeeFirstName: string) {
@@ -41,7 +53,7 @@ export class AdminPage {
         await expect(this.page.getByRole('heading', { name: 'Add User' })).toBeVisible();
         await expect(saveButton).toBeEnabled();
 
-        await this.selectUserRole('Admin');
+        await this.selectUserRole();
 
         const employeeNameInput = this.page.getByPlaceholder('Type for hints...');
 
@@ -56,7 +68,7 @@ export class AdminPage {
 
         await expect(employeeNameInput).toHaveValue(new RegExp(employeeFirstName));
 
-        await this.selectStatus('Enabled');
+        await this.selectStatus();
 
         const usernameInput = this.page
             .locator('.oxd-input-group')

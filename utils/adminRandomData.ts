@@ -23,3 +23,7 @@ export function generateRandomPassword(length = 12): string {
 
     return password.sort(() => Math.random() - 0.5).join('');
 }
+
+export function getRandomItem<T>(items: T[]): T {
+    return items[Math.floor(Math.random() * items.length)];
+}
