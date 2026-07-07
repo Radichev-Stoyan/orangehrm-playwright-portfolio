@@ -39,7 +39,7 @@ test.describe('Admin - User management', () => {
         await expect(page.getByRole('heading', { name: 'System Users' })).toBeVisible();
     });
 
-    test.only('Search user by username', async ({ page }, testInfo) => {
+    test('Search user by username', async ({ page }, testInfo) => {
         const sideMenu = new SideMenu(page, testInfo.project.name);
 
         await sideMenu.openPim();
@@ -82,5 +82,7 @@ test.describe('Admin - User management', () => {
             .filter({ hasText: `${employee.username}` });
 
         await expect(usernameTableCell).toBeVisible();
+
+        await adminPage.deleteUser(employee.username);
     });
 })

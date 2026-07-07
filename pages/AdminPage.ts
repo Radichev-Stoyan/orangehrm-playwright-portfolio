@@ -22,7 +22,7 @@ export class AdminPage {
         await expect(userRoleDropdown).toContainText(role);
 
         return role;
-    }
+    };
 
     async selectStatus(): Promise<'Enabled' | 'Disabled'> {
         const statuses: Array<'Enabled' | 'Disabled'> = ['Enabled', 'Disabled'];
@@ -43,7 +43,7 @@ export class AdminPage {
         await expect(statusDropdown).toContainText(status);
 
         return status;
-    }
+    };
 
     async createUserAdminPage(employeeFirstName: string) {
         const saveButton = this.page.getByRole('button', { name: ' Save ' });
@@ -92,7 +92,7 @@ export class AdminPage {
         await saveButton.click();
 
         return username;
-    }
+    };
 
     async searchUserByUsername(username: string) {
         const usernameInput = this.page
@@ -103,5 +103,17 @@ export class AdminPage {
         await usernameInput.fill(username);
 
         await this.page.getByRole('button', { name: ' Search ' }).click();
-    }
+    };
+
+    async deleteUser(username: string) {
+        await this.searchUserByUsername(username);
+
+        const deleteButton = this.page.locator('.oxd-table-row .bi-trash');
+
+        await deleteButton.click();
+
+        await this.page.getByRole('button', { name: ' Yes, Delete ' }).click();
+
+        await expect(this.page.locator('.oxd-toast--success')).toContainText('Successfully Deleted');
+    };
 }
