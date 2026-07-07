@@ -4,7 +4,7 @@
   "description": "End-to-end QA automation portfolio project for OrangeHRM using Playwright and TypeScript.",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test tests/pim/employee.spec.ts",
+    "test": "npx playwright test tests/admin/admin-users.spec.ts",
     "test:chromium": "playwright test --project=chromium",
     "wait:orangehrm": "tsx scripts/wait-for-orangehrm.ts"
   },
