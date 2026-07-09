@@ -39,6 +39,28 @@ test.describe('Admin - User management', () => {
         await expect(page.getByRole('heading', { name: 'System Users' })).toBeVisible();
     });
 
+    test.only('Should show required validation when User Role is empty', async ({ page }, testInfo) => {
+        const sideMenu = new SideMenu(page, testInfo.project.name);
+
+        await sideMenu.openPim();
+
+        const pimPage = new PimPage(page, testInfo.project.name);
+
+        const employee = await pimPage.createEmployee();
+
+        await sideMenu.openAdmin();
+
+        const adminPage = new AdminPage(page);
+
+        await adminPage.createUserAdminPage(employee.firstName, { skipUserRole: true });
+
+        const userRoleField = page
+            .locator('.oxd-input-group')
+            .filter({ hasText: 'User Role' });
+
+        await expect(userRoleField.getByText('Required')).toBeVisible();
+    });
+
     test('Search user by username', async ({ page }, testInfo) => {
         const sideMenu = new SideMenu(page, testInfo.project.name);
 

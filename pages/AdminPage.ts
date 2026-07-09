@@ -4,7 +4,7 @@ import { generateRandomPassword, generateRandomUsername, getRandomItem } from ".
 export class AdminPage {
     constructor(private page: Page) { }
 
-    private async selectUserRole(): Promise<'Admin' | 'ESS'> {
+    async selectUserRole(): Promise<'Admin' | 'ESS'> {
         const roles: Array<'Admin' | 'ESS'> = ['Admin', 'ESS'];
         const role = getRandomItem(roles);
 
@@ -45,7 +45,62 @@ export class AdminPage {
         return status;
     };
 
-    async createUserAdminPage(employeeFirstName: string) {
+    // async createUserAdminPage(employeeFirstName: string) {
+    //     const saveButton = this.page.getByRole('button', { name: ' Save ' });
+
+    //     await this.page.getByRole('button', { name: ' Add ' }).click();
+
+    //     await expect(this.page.getByRole('heading', { name: 'Add User' })).toBeVisible();
+    //     await expect(saveButton).toBeEnabled();
+
+    //     await this.selectUserRole();
+
+    //     const employeeNameInput = this.page.getByPlaceholder('Type for hints...');
+
+    //     await employeeNameInput.fill(employeeFirstName);
+
+    //     const suggestion = this.page
+    //         .locator('.oxd-autocomplete-dropdown')
+    //         .getByText(employeeFirstName, { exact: false });
+
+    //     await expect(suggestion).toBeVisible();
+    //     await suggestion.click();
+
+    //     await expect(employeeNameInput).toHaveValue(new RegExp(employeeFirstName));
+
+    //     await this.selectStatus();
+
+    //     const usernameInput = this.page
+    //         .locator('.oxd-input-group')
+    //         .filter({ hasText: 'Username' })
+    //         .getByRole('textbox');
+
+    //     const username = generateRandomUsername();
+
+    //     await usernameInput.fill(username);
+
+    //     const passwordSection = this.page.locator('form').locator('input[type="password"]');
+
+    //     const passwordInput = passwordSection.first();
+    //     const confirmPasswordInput = passwordSection.nth(1);
+
+    //     const password = generateRandomPassword();
+
+    //     await passwordInput.fill(password);
+    //     await confirmPasswordInput.fill(password);
+
+    //     await saveButton.click();
+
+    //     return username;
+    // };
+
+    async createUserAdminPage(
+        employeeFirstName: string,
+        options?: {
+            skipUserRole?: boolean;
+            skipStatus?: boolean;
+        }
+    ) {
         const saveButton = this.page.getByRole('button', { name: ' Save ' });
 
         await this.page.getByRole('button', { name: ' Add ' }).click();
@@ -53,7 +108,9 @@ export class AdminPage {
         await expect(this.page.getByRole('heading', { name: 'Add User' })).toBeVisible();
         await expect(saveButton).toBeEnabled();
 
-        await this.selectUserRole();
+        if (!options?.skipUserRole) {
+            await this.selectUserRole();
+        }
 
         const employeeNameInput = this.page.getByPlaceholder('Type for hints...');
 
@@ -68,7 +125,9 @@ export class AdminPage {
 
         await expect(employeeNameInput).toHaveValue(new RegExp(employeeFirstName));
 
-        await this.selectStatus();
+        if (!options?.skipStatus) {
+            await this.selectStatus();
+        }
 
         const usernameInput = this.page
             .locator('.oxd-input-group')
@@ -92,7 +151,7 @@ export class AdminPage {
         await saveButton.click();
 
         return username;
-    };
+    }
 
     async searchUserByUsername(username: string) {
         const usernameInput = this.page

@@ -4,6 +4,7 @@ export type Employee = {
     lastName: string;
     employeeId: string;
     username: string;
+    role: string;
 }
 
 export function randomString(prefix = 'test') {
@@ -17,5 +18,6 @@ export function randomEmployee(): Employee {
         lastName: `Tester${Math.floor(Math.random() * 10000)}`,
         employeeId: `${Date.now().toString().slice(-5)}`,
         username: '',
+        role: '',
     };
 }
